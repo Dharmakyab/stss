@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>སཾ་བྷོ་ཊ་བོད་སློབ་ཚོགས་པའི་དགེ་རྒན་གྱི་སློབ་ཁྲིད་མཐུན་རྐྱེན་མཛོད་ཁང་། | STSS Teachers' Teaching Repository</title>
+  <link rel="stylesheet" href="/static/css/style.css?v=2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header class="stss-header">
+    <div class="header-inner">
+      <a href="#" class="brand-section" onclick="switchView('browse')">
+        <div class="brand-logo-wrapper" title="Sambhota Tibetan Schools Society">
+          <img src="/static/images/stss_logo.png" alt="STSS Logo" class="brand-logo-img">
+        </div>
+        <div class="brand-titles">
+          <h1 class="brand-title-tibetan">སཾ་བྷོ་ཊ་བོད་སློབ་ཚོགས་པའི་དགེ་རྒན་གྱི་སློབ་ཁྲིད་མཐུན་རྐྱེན་མཛོད་ཁང་།</h1>
+          <span class="brand-title-english">STSS Teachers' Teaching Repository</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- User Persona Switcher (PRD Persona & SSO Simulation) -->
+        <div class="persona-switcher" title="Active Teacher Profile & Role (Module A & F)">
+          <span>👤</span>
+          <select id="userPersonaSelect" class="persona-select" onchange="onPersonaChanged(this.value)">
+            <option value="Tashi" selected>Tashi (Mathematics Teacher)</option>
+            <option value="Dolma">Dolma (Senior Mathematics Teacher)</option>
+            <option value="Tenzin">Tenzin (Curriculum Moderator)</option>
+            <option value="Lhamo">Lhamo (School Administrator)</option>
+            <option value="Guest">Guest (Not Signed In • Pre-Sign In)</option>
+          </select>
+        </div>
+
+        <button class="nav-btn" style="padding: 0.45rem 0.75rem; font-size: 0.82rem;" onclick="openMyProfile()" title="View Teacher Contributor Profile">
+          👤 <span>Profile</span>
+        </button>
+
+        <button class="nav-btn" id="langToggleBtn" onclick="toggleLanguage()" title="Toggle UI Language">
+          🌐 <span id="langLabel">བོད་ཡིག</span>
+        </button>
+        <button class="nav-btn btn-upload" onclick="openUploadModal()">
+          ➕ <span data-i18n="upload_btn">Upload Resource</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Instant Search -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <div class="hero-pill">
+        <span>Tibetan Schools Curriculum Hub • CTA DoE & CBSE Aligned</span>
+      </div>
+      <h2 class="hero-title" data-i18n="hero_title">Empowering STSS Educators Across India</h2>
+      <p class="hero-sub" data-i18n="hero_subtitle">
+        Curated lesson plans, bilingual worksheets, assessment papers, and SEE Learning resources from Sambhota schools.
+      </p>
+
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search by topic, keyword, quadratic equations, trigonometry, grammar, teacher name... (e.g., Quadratic, སུམ་ཅུ་པ, Fractions, Cell)"
+            autocomplete="off"
+          >
+          <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()">✕</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+    <!-- Filter Sidebar -->
+    <aside class="filter-sidebar">
+      <div class="filter-header">
+        <h2 data-i18n="filter_title">Filter Resources</h2>
+        <button class="btn-reset-filters" onclick="resetFilters()" data-i18n="reset_btn">Reset All</button>
+      </div>
+
+      <!-- Stage / Category Pills -->
+      <div class="filter-group">
+        <label data-i18n="stage_label">Education Stage</label>
+        <div class="stage-pills" id="stagePillsContainer">
+          <button class="stage-pill active" data-stage="" onclick="setStageFilter('')">All Stages</button>
+          <button class="stage-pill" data-stage="Pre-Primary" onclick="setStageFilter('Pre-Primary')">Pre-Primary</button>
+          <button class="stage-pill" data-stage="Primary (1-5)" onclick="setStageFilter('Primary (1-5)')">Primary (1-5)</button>
+          <button class="stage-pill" data-stage="Middle (6-8)" onclick="setStageFilter('Middle (6-8)')">Middle (6-8)</button>
+          <button class="stage-pill" data-stage="Secondary (9-10)" onclick="setStageFilter('Secondary (9-10)')">Secondary (9-10)</button>
+          <button class="stage-pill" data-stage="Senior Secondary (11-12)" onclick="setStageFilter('Senior Secondary (11-12)')">Sr Secondary (11-12)</button>
+        </div>
+      </div>
+
+      <!-- Subject Filter -->
+      <div class="filter-group">
+        <label for="subjectSelect" data-i18n="subject_label">Subject / སློབ་ཚན།</label>
+        <select id="subjectSelect" class="filter-select" onchange="triggerSearch()">
+          <option value="">All Subjects (ཚང་མ)</option>
+          <option value="Mathematics">Mathematics (རྩིས་རིག) • Maths Hub</option>
+          <option value="Tibetan">Tibetan Language & Literature (བོད་ཡིག)</option>
+          <option value="Science">Science (ཚན་རིག)</option>
+          <option value="Social Science">Social Science & Tibetan History (སྤྱི་ཚོགས)</option>
+          <option value="English">English Language & Literature</option>
+          <option value="Hindi">Hindi (ཧིན་དྷི)</option>
+          <option value="SEE Learning / Dialectics">SEE Learning & Dialectics (བཟང་སྤྱོད་ཤེས་ཡོན)</option>
+        </select>
+      </div>
+
+      <!-- Specific Grade Filter -->
+      <div class="filter-group">
+        <label for="gradeSelect" data-i18n="grade_label">Specific Class</label>
+        <select id="gradeSelect" class="filter-select" onchange="triggerSearch()">
+          <option value="">All Classes</option>
+          <option value="Pre-Primary">Pre-Primary / KG</option>
+          <option value="Class 1">Class 1</option>
+          <option value="Class 2">Class 2</option>
+          <option value="Class 3">Class 3</option>
+          <option value="Class 4">Class 4</option>
+          <option value="Class 5">Class 5</option>
+          <option value="Class 6">Class 6</option>
+          <option value="Class 7">Class 7</option>
+          <option value="Class 8">Class 8</option>
+          <option value="Class 9">Class 9</option>
+          <option value="Class 10">Class 10</option>
+          <option value="Class 11">Class 11</option>
+          <option value="Class 12">Class 12</option>
+        </select>
+      </div>
+
+      <!-- Minimum Rating Filter (PRD Module C) -->
+      <div class="filter-group">
+        <label for="ratingSelect">Min Rating / སྐར་མའི་ཚད།</label>
+        <select id="ratingSelect" class="filter-select" onchange="triggerSearch()">
+          <option value="">All Ratings</option>
+          <option value="4.8">★ 4.8 & above (Top Rated)</option>
+          <option value="4.5">★ 4.5 & above</option>
+          <option value="4.0">★ 4.0 & above</option>
+          <option value="3.5">★ 3.5 & above</option>
+        </select>
+      </div>
+
+      <!-- Resource Type Filter -->
+      <div class="filter-group">
+        <label for="typeSelect" data-i18n="type_label">Resource Type</label>
+        <select id="typeSelect" class="filter-select" onchange="triggerSearch()">
+          <option value="">All Types (རྣམ་གྲངས་ཚང་མ)</option>
+          <option value="Lesson Plan">Lesson Plans (སློབ་ཁྲིད་འཆར་གཞི)</option>
+          <option value="Worksheet">Worksheets & Activities (ལས་ཤོག)</option>
+          <option value="Assessment / Exam">Assessments & Exams (རྒྱུགས་གཞི)</option>
+          <option value="Teacher Guide">Teacher Guides & Manuals (ལམ་སྟོན)</option>
+          <option value="Multimedia / Slides">Slides & Multimedia (སྒྲ་བརྙན)</option>
+        </select>
+      </div>
+
+      <!-- Language Medium Filter -->
+      <div class="filter-group">
+        <label for="languageSelect" data-i18n="language_label">Medium / Language</label>
+        <select id="languageSelect" class="filter-select" onchange="triggerSearch()">
+          <option value="">All Languages</option>
+          <option value="English">English</option>
+          <option value="Tibetan (བོད་ཡིག)">Tibetan (བོད་ཡིག)</option>
+          <option value="Bilingual (Tibetan/English)">Bilingual (Tibetan / English)</option>
+          <option value="Hindi (हिंदी)">Hindi (हिंदी)</option>
+        </select>
+      </div>
+
+      <!-- STSS School Filter -->
+      <div class="filter-group">
+        <label for="schoolSelect" data-i18n="school_label">STSS School / Institution</label>
+        <select id="schoolSelect" class="filter-select" onchange="triggerSearch()">
+          <option value="">All STSS Schools (སློབ་ཁག་ཚང་མ)</option>
+          <!-- Dynamically populated from API -->
+        </select>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <section class="content-area">
+      <!-- Navigation Tabs -->
+      <nav class="view-tabs">
+        <button class="view-tab active" id="tab-browse" onclick="switchView('browse')">
+          📚 <span data-i18n="tab_browse">Browse Resources</span>
+        </button>
+        <button class="view-tab" id="tab-favorites" onclick="switchView('favorites')">
+          ⭐ <span>Favorites &amp; Saved</span>
+        </button>
+        <button class="view-tab" id="tab-moderation" onclick="switchView('moderation')">
+          🛡️ <span>Moderation Queue</span>
+          <span id="moderationBadge" style="background: #fee2e2; color: #b91c1c; font-size: 0.72rem; font-weight: bold; padding: 0.1rem 0.45rem; border-radius: 10px; margin-left: 0.2rem; display: none;">0</span>
+        </button>
+        <button class="view-tab" id="tab-templates" onclick="switchView('templates')">
+          📝 <span data-i18n="tab_templates">Lesson Plan Templates</span>
+        </button>
+        <button class="view-tab" id="tab-curriculum" onclick="switchView('curriculum')">
+          🧭 <span data-i18n="tab_curriculum">Curriculum Framework</span>
+        </button>
+        <button class="view-tab" id="tab-stats" onclick="switchView('stats')">
+          📊 <span data-i18n="tab_stats">Repository Analytics</span>
+        </button>
+      </nav>
+
+      <!-- VIEW 1: Browse Resources -->
+      <div id="view-browse">
+        <div class="content-top-bar">
+          <div class="results-count-text">
+            Showing <strong id="resourcesCount">0</strong> published teaching resources
+          </div>
+          <div class="sort-controls">
+            <label for="sortSelect">Sort by:</label>
+            <select id="sortSelect" class="sort-select" onchange="triggerSearch()">
+              <option value="newest">Recently Added</option>
+              <option value="popular">Most Downloaded</option>
+              <option value="rating">Highest Rated (★ 5-1)</option>
+              <option value="views">Most Viewed</option>
+              <option value="likes">Most Appreciated</option>
+              <option value="title">Title (Alphabetical)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Resources Grid -->
+        <div id="resourceGrid" class="resource-grid">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <div class="icon">📂</div>
+          <h3>No matching resources found</h3>
+          <p>Try clearing some filters or searching with different keywords.</p>
+          <button class="nav-btn btn-upload" style="margin-top: 1rem;" onclick="resetFilters()">Reset All Filters</button>
+        </div>
+      </div>
+
+      <!-- VIEW 1.5: Favorites & Saved (PRD Module H) -->
+      <div id="view-favorites" style="display: none;">
+        <div style="margin-bottom: 1.2rem;">
+          <h2 style="color: var(--primary-dark); margin-bottom: 0.3rem;">Saved &amp; Favorited Teaching Materials</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Resources bookmarked by <strong id="favUserName">Tashi</strong> for quick lesson planning and offline preparation.
+          </p>
+        </div>
+        <div id="favoritesGrid" class="resource-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- VIEW 1.8: Moderation Queue (PRD Module K) -->
+      <div id="view-moderation" style="display: none;">
+        <div style="margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <h2 style="color: var(--primary-dark); margin-bottom: 0.3rem;">Content Moderation &amp; Copyright Review (Module K)</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Quality gate for all new uploads before publication. Verified by STSS Subject Moderators &amp; Department of Education.
+            </p>
+          </div>
+          <button class="nav-btn" style="color: #475569; border-color: var(--border);" onclick="loadModerationQueue()">🔄 Refresh Queue</button>
+        </div>
+
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
+          <table class="moderation-table">
+            <thead>
+              <tr>
+                <th>Resource Title &amp; Topic</th>
+                <th>Subject &amp; Grade</th>
+                <th>Author &amp; School</th>
+                <th>Copyright</th>
+                <th>Status</th>
+                <th>Review Actions</th>
+              </tr>
+            </thead>
+            <tbody id="moderationQueueBody">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="color: var(--primary-dark); margin-bottom: 0.8rem; font-size: 1.05rem;">Recent Moderation Decision Audit Trail (12-Month Compliance)</h3>
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; max-height: 250px; overflow-y: auto;" id="moderationAuditLog">
+          <!-- Populated via API -->
+        </div>
+      </div>
+
+      <!-- VIEW 2: Lesson Plan Templates -->
+      <div id="view-templates" style="display: none;">
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="color: var(--primary-dark); margin-bottom: 0.4rem;">STSS Standard Teaching Templates</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Official Department of Education (DoE) &amp; STSS lesson plan formats, assessment rubrics, and SEE Learning experiential guides. Copy or download below to standardize your lesson delivery.
+          </p>
+        </div>
+        <div id="templatesList" class="resource-grid">
+          <!-- Populated via API -->
+        </div>
+      </div>
+
+      <!-- VIEW 3: Curriculum Framework -->
+      <div id="view-curriculum" style="display: none;">
+        <div style="background: #fff; padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); line-height: 1.8;">
+          <h2 style="color: var(--primary-dark); margin-bottom: 1rem;">Sambhota Tibetan Schools Curriculum Structure</h2>
+          
+          <h3 style="color: var(--accent-gold-dark); margin-top: 1rem;">1. Integrated Bilingual Curriculum (CTA DoE &amp; CBSE)</h3>
+          <p>
+            STSS schools deliver a unique dual curriculum that marries academic excellence in science, mathematics, and social studies under the Central Board of Secondary Education (CBSE) / NCERT framework with deep immersion in Tibetan language, calligraphy, Buddhist dialectics, and Tibetan civilization.
+          </p>
+
+          <h3 style="color: var(--accent-gold-dark); margin-top: 1.2rem;">2. Categorization by School Stages</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 0.8rem;">
+            <thead>
+              <tr style="background: #f8fafc; border-bottom: 2px solid var(--border); text-align: left;">
+                <th style="padding: 0.6rem 0.8rem;">Stage</th>
+                <th style="padding: 0.6rem 0.8rem;">Classes</th>
+                <th style="padding: 0.6rem 0.8rem;">Primary Medium &amp; Focus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.6rem 0.8rem; font-weight: bold;">Pre-Primary</td>
+                <td style="padding: 0.6rem 0.8rem;">Montessori / KG</td>
+                <td style="padding: 0.6rem 0.8rem;">Tibetan mother-tongue immersion, nursery rhymes, motor skills, cultural stories.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.6rem 0.8rem; font-weight: bold;">Primary</td>
+                <td style="padding: 0.6rem 0.8rem;">Classes 1 to 5</td>
+                <td style="padding: 0.6rem 0.8rem;">Basic Tibetan Grammar (Dag-yig), EVS, Basic Math, Hindi, Introduction to English.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.6rem 0.8rem; font-weight: bold;">Middle School</td>
+                <td style="padding: 0.6rem 0.8rem;">Classes 6 to 8</td>
+                <td style="padding: 0.6rem 0.8rem;">Sumchupa grammar, NCERT Science &amp; Math, Tibetan History, SEE Learning, Dialectics.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 0.6rem 0.8rem; font-weight: bold;">Secondary</td>
+                <td style="padding: 0.6rem 0.8rem;">Classes 9 to 10</td>
+                <td style="padding: 0.6rem 0.8rem;">CBSE Board Preparation (Mathematics, Science, English, Social Science, Tibetan/Hindi).</td>
+              </tr>
+              <tr>
+                <td style="padding: 0.6rem 0.8rem; font-weight: bold;">Senior Secondary</td>
+                <td style="padding: 0.6rem 0.8rem;">Classes 11 to 12</td>
+                <td style="padding: 0.6rem 0.8rem;">Science, Arts, and Commerce streams with Advanced Calculus, Tibetan Literature &amp; Philosophy.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="color: var(--accent-gold-dark); margin-top: 1.5rem;">3. SEE Learning (Social, Emotional &amp; Ethical Learning)</h3>
+          <p>
+            Developed by Emory University with the inspiration of His Holiness the Dalai Lama, SEE Learning provides educators with comprehensive tools for cultivating emotional hygiene, compassion, and systemic thinking in classrooms.
+          </p>
+        </div>
+      </div>
+
+      <!-- VIEW 4: Repository Analytics -->
+      <div id="view-stats" style="display: none;">
+        <div class="stats-cards-grid" id="statsOverview">
+          <div class="stat-metric-card">
+            <h4>Total Teaching Resources</h4>
+            <div class="number" id="statTotalResources">0</div>
+          </div>
+          <div class="stat-metric-card" style="border-left-color: var(--accent-gold);">
+            <h4>Total Downloads</h4>
+            <div class="number" id="statTotalDownloads">0</div>
+          </div>
+          <div class="stat-metric-card" style="border-left-color: #2563eb;">
+            <h4>Total Resource Views</h4>
+            <div class="number" id="statTotalViews">0</div>
+          </div>
+          <div class="stat-metric-card" style="border-left-color: #059669;">
+            <h4>Total Teacher Reviews</h4>
+            <div class="number" id="statTotalReviews">0</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div style="background: #fff; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius);">
+            <h3 style="color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.8rem;">Resources by Subject</h3>
+            <div id="statsSubjectList"></div>
+          </div>
+          <div style="background: #fff; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius);">
+            <h3 style="color: var(--primary-dark); font-size: 1rem; margin-bottom: 0.8rem;">Top Contributing Schools</h3>
+            <div id="statsSchoolsList"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Upload Modal (With PRD Module B Teaching Notes & Module K Copyright Confirmation) -->
+  <div id="uploadModal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 data-i18n="modal_upload_title">Contribute Teaching Resource</h3>
+        <button class="modal-close-btn" onclick="closeUploadModal()">&times;</button>
+      </div>
+      <form id="uploadForm" onsubmit="handleResourceSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group form-full">
+              <label for="formTitle">Resource Title (Tibetan or English) *</label>
+              <input type="text" id="formTitle" required placeholder="e.g., Quadratic Equations: Factorisation &amp; Real-World Modeling">
+            </div>
+
+            <div class="form-group">
+              <label for="formTitleEn">English Title Translation / Transliteration</label>
+              <input type="text" id="formTitleEn" placeholder="e.g., Distinction between 1st &amp; 2nd Cases in Sumchupa">
+            </div>
+
+            <div class="form-group">
+              <label for="formSubject">Subject *</label>
+              <select id="formSubject" required>
+                <option value="">Select Subject</option>
+                <option value="Mathematics" selected>Mathematics (རྩིས་རིག) • Maths Hub</option>
+                <option value="Tibetan">Tibetan Language &amp; Literature (བོད་ཡིག)</option>
+                <option value="Science">Science (ཚན་རིག)</option>
+                <option value="Social Science">Social Science &amp; Tibetan History</option>
+                <option value="English">English</option>
+                <option value="Hindi">Hindi (ཧིན་དྷི)</option>
+                <option value="SEE Learning / Dialectics">SEE Learning &amp; Dialectics</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="formGrade">Grade / Class *</label>
+              <select id="formGrade" required>
+                <option value="">Select Class</option>
+                <option value="Pre-Primary">Pre-Primary / Kindergarten</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+                <option value="Class 9">Class 9</option>
+                <option value="Class 10" selected>Class 10</option>
+                <option value="Class 11">Class 11</option>
+                <option value="Class 12">Class 12</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="formTopic">Chapter / Topic *</label>
+              <input type="text" id="formTopic" required placeholder="e.g., Chapter 4: Quadratic Equations">
+            </div>
+
+            <div class="form-group">
+              <label for="formType">Resource Type *</label>
+              <select id="formType" required>
+                <option value="Lesson Plan">Lesson Plan (འཆར་གཞི)</option>
+                <option value="Worksheet">Worksheet &amp; Activity (ལས་ཤོག)</option>
+                <option value="Assessment / Exam">Assessment &amp; Exam Paper (རྒྱུགས་གཞི)</option>
+                <option value="Teacher Guide">Teacher Guide / Manual (ལམ་སྟོན)</option>
+                <option value="Multimedia / Slides">Slides &amp; Multimedia (སྒྲ་བརྙན)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="formLanguage">Medium / Language *</label>
+              <select id="formLanguage" required>
+                <option value="English" selected>English</option>
+                <option value="Tibetan (བོད་ཡིག)">Tibetan (བོད་ཡིག)</option>
+                <option value="Bilingual (Tibetan/English)">Bilingual (Tibetan &amp; English)</option>
+                <option value="Hindi (हिंदी)">Hindi (हिंदी)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="formAuthor">Educator / Teacher Name *</label>
+              <input type="text" id="formAuthor" required placeholder="e.g., Tashi or Dolma">
+            </div>
+
+            <div class="form-group">
+              <label for="formRole">Designation / Role</label>
+              <input type="text" id="formRole" placeholder="e.g., Senior Mathematics Teacher">
+            </div>
+
+            <div class="form-group">
+              <label for="formSchool">STSS School / Branch *</label>
+              <select id="formSchool" required>
+                <option value="">Select STSS School</option>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="form-group form-full">
+              <label for="formTags">Tags (Comma-separated)</label>
+              <input type="text" id="formTags" placeholder="e.g., Quadratic Equations, Discriminant, CBSE, Class 10">
+            </div>
+
+            <div class="form-group form-full">
+              <label for="formDesc">Summary &amp; Objectives</label>
+              <textarea id="formDesc" rows="2" placeholder="Brief outline of lesson targets and expected outcomes..."></textarea>
+            </div>
+
+            <!-- PRD Module B: Optional Teaching Notes -->
+            <div class="form-group form-full">
+              <label for="formTeachingNotes">💡 Teaching Notes &amp; Pedagogical Tips (Optional)</label>
+              <textarea id="formTeachingNotes" rows="2" placeholder="Advise peers on common student misconceptions, suggested manipulatives, or pacing tips..."></textarea>
+            </div>
+
+            <div class="form-group form-full">
+              <label>Attach File (PDF, PPT, DOCX, XLSX, Markdown, Video, TXT)</label>
+              <div class="file-dropzone" onclick="document.getElementById('formFile').click()">
+                <div style="font-size: 1.5rem; margin-bottom: 0.3rem;">📄</div>
+                <div>Click or drag file here (PDF, PPTX, DOCX, XLSX, Markdown, TXT)</div>
+                <div id="selectedFileName" style="font-weight: bold; color: var(--primary); margin-top: 0.3rem;"></div>
+                <input type="file" id="formFile" style="display: none;" onchange="handleFileSelect(event)">
+              </div>
+            </div>
+
+            <div class="form-group form-full">
+              <label for="formContentText">Or Paste / Compose Content Directly (Markdown supported):</label>
+              <textarea id="formContentText" rows="5" placeholder="# Lesson Title&#10;### 1. Conceptual Framework...&#10;### 2. Practice Exercises..."></textarea>
+            </div>
+
+            <!-- PRD Module K: Mandatory Copyright & Rights Declaration -->
+            <div class="form-group form-full">
+              <div class="copyright-box">
+                <label class="copyright-checkbox-wrapper">
+                  <input type="checkbox" id="formCopyright" required checked>
+                  <span>
+                    <strong>Mandatory Copyright &amp; Ownership Confirmation (Module K):</strong><br>
+                    I certify that I am the author of this material or hold the appropriate rights and permissions to distribute it across the STSS teaching repository in accordance with STSS and CTA copyright policies.
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="nav-btn" style="color: #475569; border-color: var(--border);" onclick="closeUploadModal()">Cancel</button>
+          <button type="submit" class="nav-btn btn-upload" id="submitBtn">Submit for Moderation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Preview / Reader Modal (With PRD Module D, E, K Features) -->
+  <div id="previewModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 900px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="previewModalTitle" style="font-size: 1.15rem;">Document Preview</h3>
+          <span id="previewModalMeta" style="font-size: 0.8rem; color: #fde68a;"></span>
+        </div>
+        <button class="modal-close-btn" onclick="closePreviewModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="background: #fdfdfd;">
+        
+        <!-- Teaching Notes Callout (Module B) -->
+        <div id="previewTeachingNotesBox" class="teaching-notes-callout" style="display: none;">
+          <h4>💡 Contributor's Teaching Notes &amp; Pedagogical Tips</h4>
+          <p id="previewTeachingNotesText"></p>
+        </div>
+
+        <!-- Rendered Content -->
+        <div id="previewContent" class="doc-preview-container">
+          <!-- Formatted document inserted here -->
+        </div>
+
+        <!-- Interactive 1-5 Star Rating (Module E) -->
+        <div class="rating-widget">
+          <div>
+            <div style="font-weight: 700; color: #1e293b; font-size: 0.92rem;">Rate this Teaching Resource (1–5 Stars)</div>
+            <div style="font-size: 0.78rem; color: #64748b;" id="previewRatingSummary">Current Average: ★ 5.0 (0 ratings)</div>
+          </div>
+          <div class="interactive-stars" id="interactiveStarContainer">
+            <span data-star="1" onclick="submitRating(1)">★</span>
+            <span data-star="2" onclick="submitRating(2)">★</span>
+            <span data-star="3" onclick="submitRating(3)">★</span>
+            <span data-star="4" onclick="submitRating(4)">★</span>
+            <span data-star="5" onclick="submitRating(5)">★</span>
+          </div>
+        </div>
+
+        <!-- Peer Reviews & Comments (Module E) -->
+        <div class="reviews-section">
+          <h4>
+            <span>💬 Teacher Peer Reviews &amp; Comments (<span id="previewCommentsCount">0</span>)</span>
+            <button class="card-btn" style="background: none; border: 1px solid #cbd5e1; font-size: 0.75rem; color: #475569;" onclick="reportResource()">
+              🚩 Report Copyright / Quality Concern
+            </button>
+          </h4>
+
+          <!-- Add Review Form -->
+          <form class="review-form" onsubmit="handleCommentSubmit(event)">
+            <textarea id="commentInput" rows="2" placeholder="Leave constructive pedagogical feedback, teaching adaptations, or review notes..." required></textarea>
+            <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+              <button type="submit" class="nav-btn btn-upload" style="font-size: 0.8rem; padding: 0.35rem 0.8rem;" id="commentSubmitBtn">
+                Post Review
+              </button>
+            </div>
+          </form>
+
+          <!-- Reviews List -->
+          <div class="reviews-list" id="previewReviewsList">
+            <!-- Populated via API -->
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <div style="display: flex; gap: 0.4rem;">
+          <button class="nav-btn" style="color: #334155; border-color: #cbd5e1;" onclick="copyPreviewText()">
+            📋 Copy Text
+          </button>
+          <button class="nav-btn" style="color: #334155; border-color: #cbd5e1;" onclick="toggleCurrentPreviewFavorite()">
+            ⭐ <span id="previewFavBtnText">Save to Favorites</span>
+          </button>
+          <button class="nav-btn" style="color: #334155; border-color: #cbd5e1;" onclick="window.print()">
+            🖨️ Print
+          </button>
+        </div>
+        <div>
+          <button class="nav-btn btn-upload" id="previewDownloadBtn">
+            ⬇️ Download Document
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STSS Microsoft Entra ID SSO Login Modal (PRD Screen 01 & Module A) -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <img src="/static/images/stss_logo.png" alt="STSS Logo" style="width: 32px; height: 32px; object-fit: contain; background: #ffffff; border-radius: 50%; padding: 2px;">
+          <h3 style="font-size: 1.05rem;">STSS Single Sign-On</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeLoginModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.8rem 1.5rem; text-align: center;">
+        <img src="/static/images/stss_logo.png" alt="STSS Logo" style="width: 75px; height: 75px; object-fit: contain; margin-bottom: 0.8rem; background: #fff; border-radius: 50%; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="color: var(--primary-dark); font-size: 1.2rem; margin-bottom: 0.4rem;">Sign in with STSS Account</h3>
+        <p style="color: var(--text-muted); font-size: 0.86rem; line-height: 1.5; margin-bottom: 1.4rem;">
+          Use your official Sambhota Tibetan Schools Society credentials or Microsoft 365 Entra ID to access verified teaching resources, downloads, and lesson planning tools.
+        </p>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: left; margin-bottom: 1.2rem;">
+          <label style="font-size: 0.78rem; font-weight: 700; color: #475569; text-transform: uppercase;">Select STSS Teacher Account:</label>
+          <select id="quickLoginSelect" style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px; margin-top: 0.4rem; font-size: 0.88rem;">
+            <option value="Tashi">Tashi (Mathematics Teacher • STSS Chauntra)</option>
+            <option value="Dolma">Dolma (Senior Mathematics Teacher • STSS Paonta Sahib)</option>
+            <option value="Tenzin">Tenzin (Curriculum Moderator • CTA DoE)</option>
+            <option value="Lhamo">Lhamo (School Administrator • STSS Central)</option>
+          </select>
+        </div>
+
+        <button class="nav-btn btn-upload" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.95rem;" onclick="performSSOLogin()">
+          Sign In with Microsoft Entra ID
+        </button>
+
+        <div style="margin-top: 1rem; font-size: 0.76rem; color: #94a3b8;">
+          STSS Education Technology &amp; CTA Department of Education
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Profile Modal (PRD Module F) -->
+  <div id="teacherProfileModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 820px;">
+      <div class="modal-header">
+        <h3 id="profileModalHeaderTitle">Teacher Contributor Profile</h3>
+        <button class="modal-close-btn" onclick="closeTeacherProfile()">&times;</button>
+      </div>
+      <div class="modal-body" style="background: #ffffff; padding: 1.5rem;">
+        
+        <!-- Profile Banner -->
+        <div class="profile-hero">
+          <div class="profile-avatar-circle" id="profileAvatarLetter">
+            T
+          </div>
+          <div class="profile-hero-info">
+            <h3 id="profileNameDisplay">Teacher Name</h3>
+            <div class="profile-hero-school" id="profileSchoolDisplay">STSS School</div>
+            <div class="profile-hero-spec" id="profileSpecDisplay">Designation &amp; Subject</div>
+          </div>
+        </div>
+
+        <!-- 4 Key Metrics -->
+        <div class="profile-metrics-grid">
+          <div class="profile-metric-box">
+            <div class="metric-num" id="profileStatResources">0</div>
+            <div class="metric-label">Resources Shared</div>
+          </div>
+          <div class="profile-metric-box" style="border-top: 3px solid #2563eb;">
+            <div class="metric-num" id="profileStatDownloads">0</div>
+            <div class="metric-label">Total Downloads</div>
+          </div>
+          <div class="profile-metric-box" style="border-top: 3px solid #059669;">
+            <div class="metric-num" id="profileStatViews">0</div>
+            <div class="metric-label">Total Views</div>
+          </div>
+          <div class="profile-metric-box" style="border-top: 3px solid var(--accent-gold);">
+            <div class="metric-num" id="profileStatRating">★ 5.0</div>
+            <div class="metric-label">Average Rating</div>
+          </div>
+        </div>
+
+        <!-- Resources Contributed List -->
+        <div class="profile-resources-section">
+          <h4>
+            <span>📚 Contributed Teaching Materials &amp; Lesson Plans (<span id="profileResourcesCount">0</span>)</span>
+          </h4>
+          <div id="profileResourcesList" style="margin-top: 0.8rem;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="nav-btn" style="color: #475569; border-color: var(--border);" onclick="closeTeacherProfile()">Close Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App JS Script -->
+  <script src="/static/js/app.js?v=2"></script>
+</body>
+</html>
